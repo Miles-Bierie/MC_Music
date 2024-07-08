@@ -187,9 +187,4 @@ fn main()
     model_obj["overrides"] = model_overrides;
 
     sounds_file.write_all(&sound_obj.dump().as_bytes()).expect("Could not write to sounds.json!");
-
-    if !json_all["data"]["item"].is_null()
-    {
-        
-    }
 }
