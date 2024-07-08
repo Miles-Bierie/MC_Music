@@ -5,7 +5,7 @@
 
 ## How to Use
 
-When you run the mc_music executable, it will prompt you for a file path, and then for a name. In order to tell the program how to create the data and resource pack, you will have to create a json file (see below). This is what the "Input file path: " is refering to. The "Pack Names: " is the name of the data/resource pack. After running, it will generate an output folder containing the generated datapack and resource pack.
+When you run the mc_music executable, it will prompt you for a file path, and then for a name. In order to tell the program how to create the data and resource pack, you will have to create a json file (see below). This is what the "Input file path: " is refering to. The "Pack Names: " is the name of the data/resource pack. After running, it will generate an output folder containing the generated datapack and resource pack. If you see a message saying "Sucessfully generated files!", all went well! Else, something went wrong, and you should make sure the json file is formatted correctly, and that all referenced files exist.
 
 ## Json format
     {

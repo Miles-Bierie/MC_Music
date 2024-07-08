@@ -187,4 +187,9 @@ fn main()
     model_obj["overrides"] = model_overrides;
 
     sounds_file.write_all(&sound_obj.dump().as_bytes()).expect("Could not write to sounds.json!");
+
+    println!("Sucessfully generated files!");
+
+    print!("<Press RETURN to exit>");
+    io::stdin().read_line(&mut user_input).expect("Idk how you could mess this up...");
 }
