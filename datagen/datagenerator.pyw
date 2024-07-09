@@ -16,7 +16,9 @@ class Item(tk.Frame):
         middleFrame = tk.Frame(self, width=WIDTH, height=200, bg='blue')
         middleFrame.pack()
         
-        deleteButton = tk.Button(topFrame, text='⛝', font=('Cascadia Code', 12), width=3, height=1, fg='red').pack(side=tk.LEFT, anchor=tk.W, padx=5, pady=2)
+        tk.Button(topFrame, text='⛝', font=('Cascadia Code', 12), width=3, height=1, fg='red', command=self.destroy).pack(side=tk.LEFT, anchor=tk.W, padx=5, pady=2) # Delete Button
+        
+        
 
 class Main:
     def __init__(self):
@@ -24,9 +26,11 @@ class Main:
         self.canvasHolder = tk.Frame(root, width=100, height=100, highlightbackground='black', highlightthickness=2, relief=tk.SUNKEN, border=3)
         self.canvasHolder.grid(sticky='nesw', row=0, column=0)
         
-        self.buttonFrame = tk.Frame(root, bg='lightgray', width=400, height=200, highlightbackground='black', highlightthickness=1)
-        self.buttonFrame.grid(sticky='nesw', row=1, column=0)
+        self.dataFrame = tk.Frame
         
+        self.buttonFrame = tk.Frame(root, bg='lightgray', width=400, height=300, highlightbackground='black', highlightthickness=1)
+        self.buttonFrame.grid(sticky='nesw', row=1, column=0)
+             
         self.listFrame = tk.Frame(root, width=400, height=100, highlightbackground='black', highlightthickness=1)
         self.listFrame.grid(sticky='nesw', row=0, column=1, rowspan=2)
         
@@ -36,7 +40,7 @@ class Main:
         scrollbar = tk.Scrollbar(self.canvasHolder, command=operatorCanvas.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=(60, 10), padx=(0, 2), before=operatorCanvas)
         
-        self.mainFrame = tk.Frame(operatorCanvas, width=1000, height=940)
+        self.mainFrame = tk.Frame(operatorCanvas, width=1000)
         self.mainFrame.bind('<Configure>', lambda e: operatorCanvas.configure(scrollregion=operatorCanvas.bbox('all')))
         
         operatorCanvas.create_window((0, 0), window=self.mainFrame, anchor=tk.N)
@@ -48,6 +52,7 @@ class Main:
         
         test = Item(self.mainFrame, height=180, bg='black', border=2, relief=tk.GROOVE)
         test.pack()
+
         
         tk.Label(self.mainFrame, text="This program is still\n in development!", font=("idk", 32)).pack()
 
@@ -58,12 +63,13 @@ root = tk.Tk()
 root.title("Data-Gen")
 root.geometry('1000x1080')
 
-root.update()
+
 
 Grid.rowconfigure(root,0,weight=10)
 Grid.columnconfigure(root,0,weight=10)
-Grid.rowconfigure(root,1,weight=3)
+Grid.rowconfigure(root,1,weight=0)
 Grid.columnconfigure(root,1,weight=3)
+Grid.rowconfigure(root,2,weight=0)
 
 Main()
 

@@ -154,7 +154,6 @@ fn main()
         // Add textures
         if !&song.1["texture"].is_empty()
         {
-            let mut item_file: File = File::create(String::from(&disc_model_dir) + json_all["data"]["item"].as_str().unwrap() + ".json").unwrap(); // Must be declared
             let texture_location: &str = &song.1["texture"].as_str().unwrap().replace("\\", "/");
             let texture: &String = &String::from(Option::expect(String::from(texture_location.split_at(Option::expect(texture_location.rfind("/"), "Could not parse audio path!")).1).get(1..), "Could not parse audio name!"));
             std::fs::copy(&texture_location, (String::from(&disc_texture_dir) + texture).replace(" ", "_")).expect("Could not copy texture file(s)!");
@@ -179,17 +178,22 @@ fn main()
             };
 
             reroute_file.write_all(reroute_dump.dump().as_bytes()).expect("Could not write to texture reroute file!");
-            index += 1;
-
-            item_file.write_all(&model_obj.dump().as_bytes()).expect("Could not write to file!");
+            index += 1; 
         }
     }
+
     model_obj["overrides"] = model_overrides;
+
+    if !&json_all["data"]["item"].is_empty()
+    {
+        let mut item_file = File::create(String::from(&disc_model_dir) + json_all["data"]["item"].as_str().unwrap() + ".json").unwrap();
+        item_file.write_all(&model_obj.dump().as_bytes()).expect("Could not write to file!");
+    }
 
     sounds_file.write_all(&sound_obj.dump().as_bytes()).expect("Could not write to sounds.json!");
 
     println!("Sucessfully generated files!");
 
-    print!("<Press RETURN to exit>");
+    println!("<Press RETURN to exit>");
     io::stdin().read_line(&mut user_input).expect("Idk how you could mess this up...");
 }
