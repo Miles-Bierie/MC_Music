@@ -36,7 +36,8 @@ fn main()
     let json_all: JsonValue = json::parse(&json_data_raw).unwrap(); // All json data is stored in here
     let json_songs: &JsonValue = &json_all["songs"];
 
-    let pack_format: u8 = if !json_all["data"]["pack_format"].is_null() {Option::expect(json_all["data"]["pack_format"].as_u8(), "Error!")} else {42 as u8};  // Grab pack format if specified
+    let datapack_format: u8 = if !json_all["data"]["pack_format"].is_null() {Option::expect(json_all["data"]["pack_format"].as_u8(), "Error!")} else {42 as u8};  // Grab pack format if specified
+    let resourcepack_format: u8 = if !json_all["data"]["pack_format"].is_null() {Option::expect(json_all["data"]["pack_format"].as_u8(), "Error!")} else {42 as u8};
     let pack_description: &str = if !json_all["data"]["description"].is_null() {Option::expect(json_all["data"]["description"].as_str(), "Error!")} else {"Adds custom music discs to minecraft!"};  // Grab pack description if specified
 
     // Generate the data pack
@@ -45,7 +46,7 @@ fn main()
     fs::create_dir_all(&song_dir).expect("Could not create datapack!");
 
     // Create pack.mcmeta
-    let mcmeta_dump: String = 
+    let datapack_mcmeta_dump: String = 
     format!("
 {{
     \"pack\": {{
@@ -53,14 +54,25 @@ fn main()
         \"description\": \"{}\"
     }}
 }}
-", pack_format, pack_description
+", datapack_format, pack_description
     );
-                                                                                                        // length of "datapack"
+
+    let resourcepack_mcmeta_dump: String = 
+    format!("
+{{
+    \"pack\": {{
+        \"pack_format\": {},
+        \"description\": \"{}\"
+    }}
+}}
+", resourcepack_format, pack_description
+    );
+                                                                                                        // length of string "datapack"
     let mut meta_index: usize = Option::expect(song_dir.find("datapack/"), "Could not find index!") + 9;
     let mut mcmeta_path: &str = song_dir.split_at(meta_index).0;
 
     let mut mcmeta: File = File::create(mcmeta_path.to_string() + "pack.mcmeta").unwrap();
-    mcmeta.write_all(mcmeta_dump.as_bytes()).expect("Could not generate mcmeta file for datapack!");
+    mcmeta.write_all(datapack_mcmeta_dump.as_bytes()).expect("Could not generate mcmeta file for datapack!");
 
     for song in json_songs.entries()
     {
@@ -117,7 +129,7 @@ fn main()
     mcmeta_path = &song_file_dir.split_at(meta_index).0;
 
     mcmeta = File::create(mcmeta_path.to_string() + "pack.mcmeta").unwrap();
-    mcmeta.write_all(mcmeta_dump.as_bytes()).expect("Could not generate mcmeta file for resourcepack!");
+    mcmeta.write_all(resourcepack_mcmeta_dump.as_bytes()).expect("Could not generate mcmeta file for resourcepack!");
 
     // Add sounds.json file
     let mut sounds_file: File = File::create(String::from(&song_file_dir[..&song_file_dir.len() - 7]) + "sounds.json").unwrap();
@@ -181,7 +193,6 @@ fn main()
             index += 1; 
         }
     }
-
     model_obj["overrides"] = model_overrides;
 
     if !&json_all["data"]["item"].is_empty()

@@ -135,7 +135,8 @@ If you don't want any custom textures, dog_adder.json would look something like 
             }
         },
         "data": {
-            "pack_foramt": 42,
+            "datapack_foramt": 42,
+            "resourcepack_format": 34,
             "description": "Adds the song Dog by C418 to minecraft!"
         }
     }
@@ -147,4 +148,4 @@ And you would type in:
 ## Notes:
 - I will be making a GUI-based python tool that will generate this json file automatically, but you will manually have to type this out for now.
 
-
+- If you get some weird "Vorbis magic signature missing" error, idk what thats about and couldn't find anything useful. I suggest deleting all metadata from the file (I used Audacity.)
