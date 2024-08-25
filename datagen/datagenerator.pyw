@@ -3,7 +3,6 @@ from tkinter import ttk
 from tkinter import Grid
 from tkinter import filedialog as fd
 import tkinter.simpledialog as sd
-import json
 import pprint
 
 
@@ -46,7 +45,7 @@ class Item(tk.Frame):
         middleRightFrame.pack(side=tk.LEFT, anchor=tk.N)
         middleRightFrame.pack_propagate(False)
         
-        self.songNameVar = tk.StringVar(self, "Item_" + str(Item._incrament))
+        self.songNameVar = tk.StringVar(self, "Song_" + str(Item._incrament))
         
         
         # Top frame
@@ -81,7 +80,6 @@ class Item(tk.Frame):
         powerMenu.grid(row=0, column=1, sticky=tk.W)
         
         # Audio row
-        dir = None
         tk.Label(middleRightFrame, text='Audio: ', font=('Calibri', 14)).grid(row=1, column=0, sticky=tk.W, padx=2)
         audioFileEntry = tk.Entry(middleRightFrame, width=18, font=('Calibri', 14), textvariable=self.audioVar)
         audioFileEntry.grid(row=1, column=1, sticky=tk.W)
@@ -216,7 +214,9 @@ class Main:
         Item._incrament = 1
         Item._items.clear()
         
-        self.add_new()
+        initialItem = Item(self.mainFrame, height=180, bg='black', border=2, relief=tk.GROOVE)
+        initialItem.pack(padx=(2, 0), pady=(2, 4))
+        
         self.operatorCanvas.yview_moveto(0)
         
     def compile(self) -> None:

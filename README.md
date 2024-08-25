@@ -7,6 +7,9 @@
 
 When you run the mc_music executable, it will prompt you for a file path, and then for a name. In order to tell the program how to create the data and resourcepack, you will have to create a json file (see below). This is what the "Input file path: " is refering to. The "Pack Names: " is the name of the data/resourcepack. After running, it will generate an output folder containing the generated datapack and resourcepack. If you see a message saying "Sucessfully generated files!", all went well! Else, something went wrong, and you should make sure the json file is formatted correctly, and that all referenced files exist.
 
+## Data generator
+Because typing everything out yourself is mid fr, I've made a python gui that will help make creating this file easier. To learn how to use this, check the readme file in the datagen directory.
+
 ## Json format
     {
         "songs": {
@@ -91,7 +94,8 @@ This is the item that will be retextured. This uses the internal item name. For 
         }
     },
     "data": {
-        "pack_foramt": 42,
+        "datapack_format": 50,
+        "resourcepack_format": 36,
         "description": "Adds the song Dog by C418 to minecraft!",
         "item": "music_disc_cat"
     }
@@ -135,7 +139,7 @@ If you don't want any custom textures, dog_adder.json would look something like 
             }
         },
         "data": {
-            "datapack_foramt": 42,
+            "datapack_format": 42,
             "resourcepack_format": 34,
             "description": "Adds the song Dog by C418 to minecraft!"
         }
@@ -146,6 +150,4 @@ And you would type in:
     /give @s minecraft:music_disc_cat[jukebox_playable={song:"dog_disc:dog"}]
 
 ## Notes:
-- I will be making a GUI-based python tool that will generate this json file automatically, but you will manually have to type this out for now.
-
 - If you get some weird "Vorbis magic signature missing" error, idk what thats about and couldn't find anything useful. I suggest deleting all metadata from the file (I used Audacity.)

@@ -36,8 +36,8 @@ fn main()
     let json_all: JsonValue = json::parse(&json_data_raw).unwrap(); // All json data is stored in here
     let json_songs: &JsonValue = &json_all["songs"];
 
-    let datapack_format: u8 = if !json_all["data"]["pack_format"].is_null() {Option::expect(json_all["data"]["pack_format"].as_u8(), "Error!")} else {42 as u8};  // Grab pack format if specified
-    let resourcepack_format: u8 = if !json_all["data"]["pack_format"].is_null() {Option::expect(json_all["data"]["pack_format"].as_u8(), "Error!")} else {42 as u8};
+    let datapack_format: u8 = if !json_all["data"]["pack_format"].is_null() {Option::expect(json_all["data"]["resourcepack_format"].as_u8(), "Error!")} else {42 as u8};  // Grab pack format if specified
+    let resourcepack_format: u8 = if !json_all["data"]["pack_format"].is_null() {Option::expect(json_all["data"]["datapack_format"].as_u8(), "Error!")} else {42 as u8};
     let pack_description: &str = if !json_all["data"]["description"].is_null() {Option::expect(json_all["data"]["description"].as_str(), "Error!")} else {"Adds custom music discs to minecraft!"};  // Grab pack description if specified
 
     // Generate the data pack
