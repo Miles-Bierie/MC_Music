@@ -3,7 +3,6 @@ from tkinter import ttk
 from tkinter import Grid
 from tkinter import filedialog as fd
 import tkinter.simpledialog as sd
-import pprint
 
 
 class Prompt(tk.Label):
@@ -24,6 +23,7 @@ class Item(tk.Frame):
     _count = 0 # Stores how many items there are
     _incrament = 1
     _items = [] # Holds all items
+    
     def __init__(self, parent, *args, **kwargs):
         super().__init__(master=parent, *args, **kwargs)
         
@@ -115,13 +115,11 @@ class Item(tk.Frame):
     def open_image(self):
         image = fd.askopenfilename(title="Open image file", filetypes=(('PNG Files', '*.png'),('PNG Files', '*.png')))
         
-        if image == '':
-            return
-        
-        self.image = tk.PhotoImage(file=image)
-        if self.image.width() == 16:
-            self.image = self.image.zoom(5)
-        self.imageButton.configure(image=self.image)
+        if image != '':        
+            self.image = tk.PhotoImage(file=image)
+            if self.image.width() == 16:
+                self.image = self.image.zoom(5)
+            self.imageButton.configure(image=self.image)
         
     def get_name(self) -> str:
         return self.songNameVar.get()
@@ -131,8 +129,8 @@ class Item(tk.Frame):
             'power': int(self.powerValue.get()),
             'audio': self.audioVar.get(),
             'description': self.descriptionText.get('0.0', tk.END).strip(),
-            "texture": self.image.cget('file'),
-            "model": int(self.modelDataVar.get())
+            'texture': self.image.cget('file'),
+            'model': int(self.modelDataVar.get())
         }
         
         # TODO: Make description jsonable
@@ -140,6 +138,9 @@ class Item(tk.Frame):
 
 class Main:
     _count = 0
+    _songList = []
+    _songListMem = []
+    _songNameMem = list(i.songNameVar.get() for i in Item._items)
     def __init__(self):
         # GUI Setup
         self.dataFrame = tk.Frame(root, height=32).grid(row=4, column=0, sticky=tk.S)
@@ -152,6 +153,10 @@ class Main:
              
         self.listFrame = tk.Frame(root, width=400, height=100, highlightbackground='black', highlightthickness=1)
         self.listFrame.grid(sticky='nesw', row=0, column=1, rowspan=2)
+        self.listFrame.grid_propagate(False)
+        
+        self.songList = tk.Listbox(self.listFrame, width=40, selectmode=tk.SINGLE, font=('Calibri', 14), selectbackground='white', selectforeground='green')
+        self.songList.pack(expand=True, fill=tk.BOTH)
         
         self.operatorCanvas = tk.Canvas(self.canvasHolder, width=600, height=940)
         self.operatorCanvas.pack(side=tk.LEFT, fill=tk.Y, expand=True)
@@ -178,9 +183,7 @@ class Main:
         
         initialItem = Item(self.mainFrame, height=180, bg='black', border=2, relief=tk.GROOVE)
         initialItem.pack(padx=(2, 0), pady=(2, 4))
-
-        
-        # tk.Label(self.mainFrame, text="This program is still\n in development!", font=("idk", 32)).pack()
+        self._songList.append(initialItem)
         
         # Data frame
         self.descriptionVar = tk.StringVar()
@@ -205,6 +208,7 @@ class Main:
         item = Item(self.mainFrame, height=180, bg='black', border=2, relief=tk.GROOVE)
         item.pack(padx=(2, 0), pady=4)
         
+        self._songList.append(item)
           
     def clear(self) -> None:
         for i in self.mainFrame.winfo_children():
@@ -216,6 +220,10 @@ class Main:
         
         initialItem = Item(self.mainFrame, height=180, bg='black', border=2, relief=tk.GROOVE)
         initialItem.pack(padx=(2, 0), pady=(2, 4))
+        
+        self._songList.clear()
+        self._songListMem.clear()
+        self._songList.append(initialItem)
         
         self.operatorCanvas.yview_moveto(0)
         
@@ -241,23 +249,41 @@ class Main:
             for i in self.mainFrame.winfo_children():
                 jsonDict['songs'][i.get_name()] = i.compile()
             
-            pprint.pprint(file)
             with open(file, 'w') as f:
                 f.write(str(jsonDict).replace("'", '"'))
+                
+                
+    def update_list(self):
+        name = list(i.songNameVar.get() for i in Item._items), list(i.songNameVar.get() for i in Item._items)
+        
+        if self._songList != self._songListMem or not all([a == b for a, b in zip(name, Main.songNameMem)]):
+        
+            self.songList.delete(first=0, last=tk.END)
+            for index, item in enumerate(Item._items):
+                song = item.songNameVar.get()
+                self.songList.insert(index, song)
+                
+            self._songListMem = self._songList.copy()
+            Main.songNameMem = list(i.songNameVar.get() for i in Item._items), list(i.songNameVar.get() for i in Item._items)
+        
+        root.after(200, self.update_list)
 
 root = tk.Tk()
 root.title("Data-Gen")
 root.geometry('1020x960')
 
 
-
+# Grid configure
 Grid.rowconfigure(root,0,weight=10)
 Grid.columnconfigure(root,0,weight=10)
 Grid.rowconfigure(root,1,weight=0)
 Grid.columnconfigure(root,1,weight=3)
 Grid.rowconfigure(root,2,weight=0)
 
-Main()
+cls = Main()
 
 root.resizable(False, True)
+root.minsize(False, 128)
+
+root.after(10, cls.update_list)
 root.mainloop()
